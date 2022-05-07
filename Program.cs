@@ -7,12 +7,29 @@ namespace Algorithm
         static void Main(string[] args)
         {
             Board board = new Board();
-            board.Initialize(25);
+            Player player = new Player();
+            board.Initialize(25, player);
+            player.Initialize(1, 1, board.Size - 2, board.Size - 2, board);
 
             Console.CursorVisible = false;
 
+            const int WAIT_TICK = 1000 / 30;
+
+            int lastTick = 0;
+
             while (true)
             {
+                #region 프레임 관리
+                // 만약에 경과한 시간인 1/30초보다 작다면
+                int currentTick = System.Environment.TickCount;
+                if (currentTick - lastTick < WAIT_TICK)
+                    continue;
+                int deltaTick = currentTick - lastTick;
+                lastTick = currentTick;
+                #endregion
+
+                player.Update(deltaTick);
+
                 Console.SetCursorPosition(0, 0);
                 board.Render();
             }
