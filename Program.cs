@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Algorithm
 {
-    class PriorityQueue
+    class PriorityQueue<T> where T : IComparable<T>
     {
-        List<int> _heap = new List<int>();
+        List<T> _heap = new List<T>();
 
         // 0(logN)
-        public void Push(int data)
+        public void Push(T data)
         {
             // 힙의 맨 끝에 새로운 데이터를 삽입한다.
             _heap.Add(data);
@@ -18,11 +18,11 @@ namespace Algorithm
             {
                 // 도장깨기를 시도
                 int next = (now - 1) / 2;
-                if (_heap[now] < _heap[next])
+                if (_heap[now].CompareTo(_heap[next]) < 0)
                     break; // 실패
 
                 // 두 값을 교체한다
-                int temp = _heap[now];
+                T temp = _heap[now];
                 _heap[now] = _heap[next];
                 _heap[next] = temp;
 
@@ -32,10 +32,10 @@ namespace Algorithm
         }
 
         // 0(logN)
-        public int Pop()
+        public T Pop()
         {
             //  반환할 데이터를 따로 저장
-            int ret = _heap[0];
+            T ret = _heap[0];
 
             // 마지막 데이터를 루트로 이동한다.
             int lastIndex = _heap.Count - 1;
@@ -52,10 +52,10 @@ namespace Algorithm
 
                 int next = now;
                 // 왼쪽값이 현재값보다 크면, 왼쪽으로 이동
-                if (left <= lastIndex && _heap[next] < _heap[left])
+                if (left <= lastIndex && _heap[next].CompareTo(_heap[left]) < 0)
                     next = left;
                 // 오른값이 현재값(왼쪽 이동 포함)보다 크면, 오른쪽으로 이동
-                if (right <= lastIndex && _heap[next] < _heap[right])
+                if (right <= lastIndex && _heap[next].CompareTo(_heap[right]) < 0)
                     next = right;
 
                 // 왼쪽 오른쪽 모두 현재값보다 작으면 종료
@@ -63,7 +63,7 @@ namespace Algorithm
                     break;
 
                 // 두 값을 교체한다.
-                int temp = _heap[now];
+                T temp = _heap[now];
                 _heap[now] = _heap[next];
                 _heap[next] = temp;
                 now = next;
@@ -231,6 +231,19 @@ namespace Algorithm
         public List<TreeNode<T>> Children { get; set; } = new List<TreeNode<T>>();
     }
 
+    class Knight : IComparable<Knight>
+    {
+        public int Id { get; set; }
+
+        public int CompareTo(Knight other)
+        {
+            if (Id == other.Id)
+                return 0;
+            return Id > other.Id ? 1 : -1;
+
+        }
+    }
+
     class Program
     {
         static TreeNode<string> MakeTree()
@@ -285,16 +298,16 @@ namespace Algorithm
         }
         static void Main(string[] args)
         {
-            PriorityQueue q = new PriorityQueue();
-            q.Push(20);
-            q.Push(10);
-            q.Push(30);
-            q.Push(90);
-            q.Push(40);
+            PriorityQueue<Knight> q = new PriorityQueue<Knight>();
+            q.Push(new Knight() { Id = 20 });
+            q.Push(new Knight() { Id = 30 });
+            q.Push(new Knight() { Id = 40 });
+            q.Push(new Knight() { Id = 10 });
+            q.Push(new Knight() { Id = 05 });
 
             while (q.Count() > 0)
             {
-                System.Console.WriteLine(q.Pop());
+                System.Console.WriteLine(q.Pop().Id);
             }
 
             // Board board = new Board();
